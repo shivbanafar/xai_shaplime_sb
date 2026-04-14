@@ -1,0 +1,105 @@
+============================================================
+Dataset : RAVDESS
+============================================================
+  Total files : 1440
+  Samples     : 1440 | Features: 2275 | Classes: 8
+  Classes     : [np.str_('angry'), np.str_('calm'), np.str_('disgust'), np.str_('fearful'), np.str_('happy'), np.str_('neutral'), np.str_('sad'), np.str_('surprised')]
+
+  PCA 300-dim explains 92.7% variance
+
+[SVM]  LinearSVC C=0.05, full training set
+  Accuracy : 0.8958
+              precision    recall  f1-score   support
+
+       angry       0.90      0.95      0.92        38
+        calm       0.80      0.87      0.84        38
+     disgust       1.00      0.95      0.97        38
+     fearful       0.97      0.90      0.93        39
+       happy       0.92      0.85      0.88        39
+     neutral       0.80      0.84      0.82        19
+         sad       0.82      0.82      0.82        38
+   surprised       0.93      0.97      0.95        39
+
+    accuracy                           0.90       288
+   macro avg       0.89      0.89      0.89       288
+weighted avg       0.90      0.90      0.90       288
+
+[XGBoost]  PCA 300-dim + early stopping → retrain on full
+  Optimal n_estimators : 799
+  Accuracy : 0.8125
+              precision    recall  f1-score   support
+
+       angry       0.78      0.95      0.86        38
+        calm       0.70      0.82      0.76        38
+     disgust       0.94      0.82      0.87        38
+     fearful       0.94      0.87      0.91        39
+       happy       0.90      0.69      0.78        39
+     neutral       0.58      0.74      0.65        19
+         sad       0.86      0.63      0.73        38
+   surprised       0.79      0.95      0.86        39
+
+    accuracy                           0.81       288
+   macro avg       0.81      0.81      0.80       288
+weighted avg       0.83      0.81      0.81       288
+
+[RF]  PCA 300-dim, 500 trees, fit on full training set
+  Accuracy : 0.8264
+              precision    recall  f1-score   support
+
+       angry       0.88      0.92      0.90        38
+        calm       0.66      1.00      0.79        38
+     disgust       0.84      0.84      0.84        38
+     fearful       0.94      0.82      0.88        39
+       happy       0.88      0.72      0.79        39
+     neutral       0.90      0.47      0.62        19
+         sad       0.90      0.68      0.78        38
+   surprised       0.81      0.97      0.88        39
+
+    accuracy                           0.83       288
+   macro avg       0.85      0.80      0.81       288
+weighted avg       0.85      0.83      0.82       288
+
+[Ensemble — Stacking]  OOF cross-val probas → LogisticRegression meta-learner
+  Accuracy : 0.8993
+              precision    recall  f1-score   support
+
+       angry       0.95      0.95      0.95        38
+        calm       0.75      0.87      0.80        38
+     disgust       1.00      0.95      0.97        38
+     fearful       0.95      0.92      0.94        39
+       happy       0.97      0.85      0.90        39
+     neutral       0.83      0.79      0.81        19
+         sad       0.84      0.84      0.84        38
+   surprised       0.90      0.97      0.94        39
+
+    accuracy                           0.90       288
+   macro avg       0.90      0.89      0.89       288
+weighted avg       0.90      0.90      0.90       288
+
+
+[MAML]  meta-train 300 ep → fine-tune 300 ep (label smoothing)
+  Meta-training ...
+  Fine-tuning ...
+  Accuracy : 0.9201
+              precision    recall  f1-score   support
+
+       angry       1.00      0.95      0.97        38
+        calm       0.87      0.89      0.88        38
+     disgust       1.00      1.00      1.00        38
+     fearful       0.97      0.92      0.95        39
+       happy       0.97      0.82      0.89        39
+     neutral       0.78      0.95      0.86        19
+         sad       0.80      0.84      0.82        38
+   surprised       0.93      1.00      0.96        39
+
+    accuracy                           0.92       288
+   macro avg       0.92      0.92      0.92       288
+weighted avg       0.92      0.92      0.92       288
+
+========================================================
+  SVM          : 0.8958  ✗
+  XGBoost      : 0.8125  ✗
+  RF           : 0.8264  ✗
+  Stacking     : 0.8993  ✗
+  MAML         : 0.9201  ✓
+========================================================

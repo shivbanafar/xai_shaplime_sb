@@ -1,0 +1,102 @@
+============================================================
+Dataset : TESS
+============================================================
+  Total files : 2800
+  Samples     : 2800 | Features: 2275 | Classes: 7
+  Classes     : [np.str_('anger'), np.str_('disgust'), np.str_('fear'), np.str_('happiness'), np.str_('neutral'), np.str_('sadness'), np.str_('surprise')]
+
+  TESS: using WavLM-only features (2048-dim) for speaker-independent eval
+  Split: speaker-independent  train(OAF)=1400  test(YAF)=1400
+  PCA 300-dim explains 90.9% variance
+
+[SVM]  LinearSVC C=0.05, full training set
+  Accuracy : 0.8436
+              precision    recall  f1-score   support
+
+       anger       0.69      0.21      0.33       200
+     disgust       0.95      0.99      0.97       200
+        fear       1.00      1.00      1.00       200
+   happiness       0.97      0.70      0.82       200
+     neutral       0.95      1.00      0.98       200
+     sadness       0.53      1.00      0.70       200
+    surprise       0.99      0.99      0.99       200
+
+    accuracy                           0.84      1400
+   macro avg       0.87      0.84      0.83      1400
+weighted avg       0.87      0.84      0.83      1400
+
+[XGBoost]  PCA 300-dim + early stopping → retrain on full
+  Optimal n_estimators : 798
+  Accuracy : 0.7457
+              precision    recall  f1-score   support
+
+       anger       0.63      0.69      0.66       200
+     disgust       0.97      0.96      0.97       200
+        fear       0.68      1.00      0.81       200
+   happiness       0.40      0.33      0.36       200
+     neutral       0.83      1.00      0.90       200
+     sadness       0.77      0.39      0.51       200
+    surprise       0.96      0.85      0.90       200
+
+    accuracy                           0.75      1400
+   macro avg       0.75      0.75      0.73      1400
+weighted avg       0.75      0.75      0.73      1400
+
+[RF]  PCA 300-dim, 500 trees, fit on full training set
+  Accuracy : 0.8036
+              precision    recall  f1-score   support
+
+       anger       0.56      0.88      0.69       200
+     disgust       0.96      0.98      0.97       200
+        fear       0.82      1.00      0.90       200
+   happiness       0.12      0.01      0.01       200
+     neutral       0.90      1.00      0.95       200
+     sadness       0.76      0.85      0.81       200
+    surprise       0.98      0.91      0.94       200
+
+    accuracy                           0.80      1400
+   macro avg       0.73      0.80      0.75      1400
+weighted avg       0.73      0.80      0.75      1400
+
+[Ensemble — Stacking]  OOF cross-val probas → LogisticRegression meta-learner
+  Accuracy : 0.8793
+              precision    recall  f1-score   support
+
+       anger       0.72      0.60      0.66       200
+     disgust       0.99      0.99      0.99       200
+        fear       0.93      1.00      0.96       200
+   happiness       0.82      0.59      0.69       200
+     neutral       0.95      1.00      0.97       200
+     sadness       0.74      0.96      0.84       200
+    surprise       1.00      1.00      1.00       200
+
+    accuracy                           0.88      1400
+   macro avg       0.88      0.88      0.87      1400
+weighted avg       0.88      0.88      0.87      1400
+
+
+[MAML]  meta-train 300 ep → fine-tune 300 ep (label smoothing)
+  Meta-training ...
+  Fine-tuning ...
+  Accuracy : 0.8243
+              precision    recall  f1-score   support
+
+       anger       0.50      0.69      0.58       200
+     disgust       0.90      1.00      0.95       200
+        fear       0.87      1.00      0.93       200
+   happiness       1.00      0.07      0.14       200
+     neutral       0.97      1.00      0.99       200
+     sadness       0.81      1.00      0.89       200
+    surprise       1.00      1.00      1.00       200
+
+    accuracy                           0.82      1400
+   macro avg       0.86      0.82      0.78      1400
+weighted avg       0.86      0.82      0.78      1400
+
+========================================================
+  SVM          : 0.8436  ✗
+  XGBoost      : 0.7457  ✗
+  RF           : 0.8036  ✗
+  Stacking     : 0.8793  ✗
+  MAML         : 0.8243  ✗
+========================================================

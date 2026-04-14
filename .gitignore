@@ -1,0 +1,17 @@
+# Exclude everything by default
+*
+
+# Allow scripts and results folders
+!scripts/
+!scripts/**
+!results/
+!results/**/
+!results/**
+
+# Exclude specific files in results
+results/RESULTS.md
+results/SER_Report.docx
+results/summary.txt
+
+# Exclude other top-level items
+!.gitignore
