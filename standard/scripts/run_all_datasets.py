@@ -31,7 +31,7 @@ np.random.seed(42); torch.manual_seed(42)
 BASE_DIR    = "/Users/shivbanafar/Desktop/Research/xai_paper_shaplime"
 DATA_DIR    = os.path.join(BASE_DIR, "data")
 CACHE_DIR   = os.path.join(BASE_DIR, "cache")
-RESULTS_DIR = os.path.join(BASE_DIR, "results")
+RESULTS_DIR = os.path.join(BASE_DIR, "standard", "results")
 SR_MODEL    = 16000
 SR_HAND     = 22050
 N_MFCC      = 40

@@ -1,0 +1,88 @@
+============================================================
+CROSS-CORPUS SER:  MAML + SVM  |  train SAVEE (Eng) -> test EMO-DB (Ger)
+============================================================
+Device: cpu | Features: WavLM-only 2048-dim | seed 42
+Shared classes (6): ['anger', 'disgust', 'fear', 'happiness', 'neutral', 'sadness']
+SAVEE train: 420 | EMO-DB test: 454
+
+============================================================
+NORMALIZATION: source-scaler (fit on SAVEE)
+============================================================
+
+[SVM]  LinearSVC C=0.1, PCA300
+  acc=0.5529  macroF1=0.5597
+              precision    recall  f1-score   support
+
+       anger       0.80      0.47      0.59       127
+     disgust       0.85      0.48      0.61        46
+        fear       0.33      0.84      0.47        69
+   happiness       0.48      0.51      0.49        71
+     neutral       0.96      0.28      0.43        79
+     sadness       0.68      0.85      0.76        62
+
+    accuracy                           0.55       454
+   macro avg       0.68      0.57      0.56       454
+weighted avg       0.69      0.55      0.56       454
+
+[MAML]  meta-train 300ep + fine-tune 300ep (label smoothing)
+  acc=0.5374  macroF1=0.5636
+              precision    recall  f1-score   support
+
+       anger       0.84      0.45      0.58       127
+     disgust       1.00      0.59      0.74        46
+        fear       0.28      0.96      0.43        69
+   happiness       0.59      0.37      0.45        71
+     neutral       0.94      0.20      0.33        79
+     sadness       0.84      0.84      0.84        62
+
+    accuracy                           0.54       454
+   macro avg       0.75      0.57      0.56       454
+weighted avg       0.75      0.54      0.55       454
+
+
+============================================================
+NORMALIZATION: per-corpus z-norm (each corpus by own mean/std)
+============================================================
+
+[SVM]  LinearSVC C=0.1, PCA300
+  acc=0.6960  macroF1=0.6853
+              precision    recall  f1-score   support
+
+       anger       0.88      0.64      0.74       127
+     disgust       0.63      0.85      0.72        46
+        fear       0.63      0.64      0.63        69
+   happiness       0.61      0.52      0.56        71
+     neutral       0.68      0.95      0.79        79
+     sadness       0.69      0.65      0.67        62
+
+    accuracy                           0.70       454
+   macro avg       0.68      0.71      0.69       454
+weighted avg       0.71      0.70      0.69       454
+
+[MAML]  meta-train 300ep + fine-tune 300ep (label smoothing)
+  acc=0.7489  macroF1=0.7356
+              precision    recall  f1-score   support
+
+       anger       0.90      0.75      0.82       127
+     disgust       0.84      0.70      0.76        46
+        fear       0.69      0.64      0.66        69
+   happiness       0.68      0.56      0.62        71
+     neutral       0.70      0.99      0.82        79
+     sadness       0.67      0.82      0.74        62
+
+    accuracy                           0.75       454
+   macro avg       0.75      0.74      0.74       454
+weighted avg       0.76      0.75      0.75       454
+
+
+============================================================
+SUMMARY — accuracy / macro-F1 (SAVEE -> EMO-DB)
+============================================================
+Normalization                          SVM            MAML
+----------------------------------------------------------
+source-scaler (naive)        55.3% (F1 0.56)   53.7% (F1 0.56)
+per-corpus z-norm            69.6% (F1 0.69)   74.9% (F1 0.74)
+
+Note: per-corpus z-norm = unsupervised target-domain feature normalization
+(uses EMO-DB feature statistics, NOT labels). Standard for cross-corpus SER.
+MAML single-run varies ~±5% across seeds; seed=42 reported.

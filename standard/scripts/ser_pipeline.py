@@ -31,10 +31,10 @@ torch.manual_seed(42)
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 BASE_DIR      = "/Users/shivbanafar/Desktop/Research/xai_paper_shaplime"
-RAVDESS_DIR   = os.path.join(BASE_DIR, "RAVDESS")
-CACHE_WAVLM   = os.path.join(BASE_DIR, "ravdess_wavlm.npz")   # WavLM features
-CACHE_HAND    = os.path.join(BASE_DIR, "ravdess_hand.npz")    # handcrafted (reuse)
-CACHE_COMBINED = os.path.join(BASE_DIR, "ravdess_wavlm_combined.npz")
+RAVDESS_DIR   = os.path.join(BASE_DIR, "data", "RAVDESS")
+CACHE_WAVLM   = os.path.join(BASE_DIR, "cache", "ravdess_wavlm.npz")   # WavLM features
+CACHE_HAND    = os.path.join(BASE_DIR, "cache", "ravdess_hand.npz")    # handcrafted (reuse)
+CACHE_COMBINED = os.path.join(BASE_DIR, "cache", "ravdess_wavlm_combined.npz")
 
 SR_MODEL = 16000    # WavLM requires 16 kHz
 SR_HAND  = 22050

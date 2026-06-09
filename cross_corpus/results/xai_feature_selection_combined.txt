@@ -1,0 +1,34 @@
+================================================================
+XAI FEATURE SELECTION (SHAP + LIME combined)  SAVEE -> EMO-DB
+================================================================
+Device cpu | SAVEE (420, 2048) | EMO-DB (454, 2048)
+SVM (full 2048-dim) train-acc=1.000
+
+[SHAP] LinearExplainer on SAVEE ...
+  SHAP top-5 dims: [1533, 1524, 1710, 1847, 2036]
+
+[LIME] aggregating 150 SAVEE instances (num_samples=1000) ...
+  LIME top-5 dims: [1977, 1533, 1524, 1710, 1295]
+  combined top-5 dims: [1533, 1524, 1710, 2017, 1724]
+  SHAP/LIME top-512 overlap: 393/512
+
+[SWEEP] retraining MAML on top-k combined dims
+  k=128    acc= 46.3%   macroF1=0.430
+  k=256    acc= 52.6%   macroF1=0.472
+  k=512    acc= 64.5%   macroF1=0.613
+  k=1024   acc= 65.9%   macroF1=0.653
+  k=2048   acc= 66.1%   macroF1=0.644  (full baseline)
+
+================================================================
+SUMMARY — MAML accuracy vs # SHAP+LIME-selected WavLM dims
+================================================================
+k (top dims)        Accuracy    macro-F1
+----------------------------------------
+128                    46.3%       0.430
+256                    52.6%       0.472
+512                    64.5%       0.613
+1024                   65.9%       0.653
+2048                   66.1%       0.644
+----------------------------------------
+Best: k=2048 at 66.1%  |  full(2048)=66.1%
+Verdict: full features best — selection does NOT beat baseline

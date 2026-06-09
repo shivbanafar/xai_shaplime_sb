@@ -1,17 +1,31 @@
-# Exclude everything by default
+# ---- ignore everything by default ----
 *
 
-# Allow scripts and results folders
-!scripts/
-!scripts/**
-!results/
-!results/**/
-!results/**
-
-# Exclude specific files in results
-results/RESULTS.md
-results/SER_Report.docx
-results/summary.txt
-
-# Exclude other top-level items
+# ---- top-level meta files ----
 !.gitignore
+!README.md
+
+# ---- cross_corpus/ : keep only scripts + results ----
+!cross_corpus/
+cross_corpus/*
+!cross_corpus/scripts/
+!cross_corpus/scripts/**
+!cross_corpus/results/
+!cross_corpus/results/**
+
+# ---- standard/ : keep only scripts + results ----
+!standard/
+standard/*
+!standard/scripts/
+!standard/scripts/**
+!standard/results/
+!standard/results/**
+
+# ---- re-exclude noise inside the kept trees ----
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+**/.ipynb_checkpoints/
+
+# large / regenerable binary report (rebuild via standard/scripts/generate_report.py)
+standard/results/SER_Report.docx

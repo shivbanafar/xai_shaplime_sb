@@ -1,0 +1,28 @@
+================================================================
+XAI-BASED FEATURE SELECTION (Option A: SHAP on SVM)  SAVEE -> EMO-DB
+================================================================
+Device cpu | SAVEE train (420, 2048) | EMO-DB test (454, 2048)
+
+[SHAP] ranking 2048 WavLM dims via LinearExplainer (SAVEE only) ...
+  done. top-5 dim indices: [1533, 1524, 1710, 1847, 2036]
+
+[SWEEP] retraining MAML on top-k SHAP-selected dims
+  k=128    acc= 43.2%   macroF1=0.406
+  k=256    acc= 52.9%   macroF1=0.492
+  k=512    acc= 58.8%   macroF1=0.554
+  k=1024   acc= 61.2%   macroF1=0.596
+  k=2048   acc= 69.4%   macroF1=0.676  (full baseline)
+
+================================================================
+SUMMARY — MAML accuracy vs # SHAP-selected WavLM dims
+================================================================
+k (top dims)        Accuracy    macro-F1
+----------------------------------------
+128                    43.2%       0.406
+256                    52.9%       0.492
+512                    58.8%       0.554
+1024                   61.2%       0.596
+2048                   69.4%       0.676
+----------------------------------------
+Best: k=2048 at 69.4%  |  full(2048)=69.4%
+Verdict: full features best — selection does NOT beat baseline
