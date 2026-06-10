@@ -8,17 +8,19 @@
 
 ## Overall Accuracy
 
-| Dataset   | Classes | N     | SVM    | XGBoost | MAML       |
-|-----------|---------|-------|--------|---------|------------|
-| RAVDESS   | 8       | 1440  | 89.6%  | 81.6%   | **90.6%** ✓ |
-| EMO-DB    | 7       | 535   | 98.1%  | 90.7%   | **100.0%** ✓ |
-| SAVEE     | 7       | 480   | 93.8%  | 72.9%   | **93.8%** ✓ |
-| TESS *    | 7       | 2800  | 84.4%  | 75.6%   | **86.2%**  |
-| **Avg**   |         |       | **91.5%** | **80.2%** | **92.7%** |
+| Dataset   | Classes | N     | SVM    | XGBoost | MAML       | Stacking |
+|-----------|---------|-------|--------|---------|------------|----------|
+| RAVDESS   | 8       | 1440  | 89.6%  | 81.6%   | **90.6%** ✓ | 89.9%   |
+| EMO-DB    | 7       | 535   | 98.1%  | 90.7%   | **100.0%** ✓ | 96.3%   |
+| SAVEE     | 7       | 480   | 93.8%  | 72.9%   | **93.8%** ✓ | 90.6%   |
+| TESS *    | 7       | 2800  | 84.4%  | 75.6%   | **86.2%**  | 87.9%   |
+| **Avg**   |         |       | **91.5%** | **80.2%** | **92.7%** | **91.2%** |
 
 \* TESS: speaker-independent evaluation (train on OAF speaker, test on YAF speaker)
 
-**Model ranking:** MAML (92.7%) > SVM (91.5%) > XGBoost (80.2%)
+**Model ranking:** MAML (92.7%) > SVM (91.5%) > Stacking (91.2%) > XGBoost (80.2%)
+
+**Stacking** = out-of-fold SVM/RF/XGBoost class probabilities → LogisticRegression meta-learner (per-dataset values from `results.txt`). It trails the best single model on most datasets but edges out MAML on TESS (87.9% vs 86.2%).
 
 ---
 
