@@ -1,0 +1,23 @@
+================================================================
+REVERSE (EMO-DB -> SAVEE): PER-SPEAKER z-norm + balanced + 3-seed
+================================================================
+speaker alignment verified | EMO-DB speakers [np.str_('03'), np.str_('08'), np.str_('09'), np.str_('10'), np.str_('11'), np.str_('12'), np.str_('13'), np.str_('14'), np.str_('15'), np.str_('16')] | SAVEE speakers [np.str_('DC'), np.str_('JE'), np.str_('JK'), np.str_('KL')]
+
+[SVM balanced + speaker-norm]  acc=54.3%  macroF1=0.495
+  seed 42: acc=58.3%
+  seed 123: acc=56.7%
+  seed 7: acc=60.0%
+
+[MAML ensemble]  acc=63.6%  macroF1=0.578  (per-seed mean 58.3% +/- 1.4)
+              precision    recall  f1-score   support
+
+       anger       0.43      0.82      0.57        60
+     disgust       0.70      0.38      0.49        60
+        fear       0.69      0.15      0.25        60
+   happiness       0.42      0.68      0.52        60
+     neutral       0.94      0.86      0.90       120
+     sadness       0.79      0.70      0.74        60
+
+    accuracy                           0.64       420
+   macro avg       0.66      0.60      0.58       420
+weighted avg       0.70      0.64      0.62       420

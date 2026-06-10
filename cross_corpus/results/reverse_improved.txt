@@ -1,0 +1,28 @@
+================================================================
+IMPROVED REVERSE  (EMO-DB -> SAVEE), leakage-free
+================================================================
+EMO-DB class counts: anger=127, disgust=46, fear=69, happiness=71, neutral=79, sadness=62
+inverse-freq weights: anger=0.60, disgust=1.64, fear=1.10, happiness=1.07, neutral=0.96, sadness=1.22
+
+[SVM balanced]  acc=53.8%  macroF1=0.512
+  seed 42: MAML acc=55.0%
+  seed 123: MAML acc=60.7%
+  seed 7: MAML acc=50.7%
+
+[MAML balanced + 3-seed ensemble]  acc=60.2%  macroF1=0.576  (per-seed mean 55.5%)
+              precision    recall  f1-score   support
+
+       anger       0.44      0.77      0.56        60
+     disgust       0.63      0.60      0.62        60
+        fear       0.57      0.35      0.43        60
+   happiness       0.56      0.53      0.55        60
+     neutral       0.83      0.72      0.77       120
+     sadness       0.52      0.53      0.53        60
+
+    accuracy                           0.60       420
+   macro avg       0.59      0.58      0.58       420
+weighted avg       0.63      0.60      0.60       420
+
+Fear/happiness recall (improved, reverse):
+  fear       recall= 35.0%
+  happiness  recall= 53.3%

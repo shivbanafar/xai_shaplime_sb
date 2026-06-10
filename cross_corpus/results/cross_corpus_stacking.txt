@@ -1,0 +1,43 @@
+================================================================
+STACKING ENSEMBLE  —  SAVEE -> EMO-DB  (per-corpus z-norm)
+================================================================
+SAVEE (420, 2048) | EMO-DB (454, 2048) | base learners: SVM, XGBoost, MAML
+
+[OOF] 5-fold out-of-fold base predictions on SAVEE ...
+  fold 1/5 done
+  fold 2/5 done
+  fold 3/5 done
+  fold 4/5 done
+  fold 5/5 done
+
+[FULL] retraining base learners on all SAVEE, predicting EMO-DB ...
+
+----------------------------------------------------------------
+EMO-DB results: standalone base learners vs stacking
+----------------------------------------------------------------
+  SVM (calibrated)       acc= 59.5%   macroF1=0.581
+  XGBoost                acc= 48.5%   macroF1=0.489
+  MAML                   acc= 72.5%   macroF1=0.708
+  Soft-vote (mean prob)  acc= 65.4%   macroF1=0.649
+----------------------------------------------------------------
+  STACKING (meta-LR)     acc= 69.2%   macroF1=0.681
+----------------------------------------------------------------
+
+  meta-LR learned weights (mean |coef| per base learner):
+    svm    0.698
+    xgb    0.483
+    maml   0.774
+
+[STACKING] per-class report on EMO-DB:
+              precision    recall  f1-score   support
+
+       anger       0.93      0.64      0.76       127
+     disgust       0.73      0.78      0.76        46
+        fear       0.56      0.64      0.59        69
+   happiness       0.64      0.45      0.53        71
+     neutral       0.61      1.00      0.76        79
+     sadness       0.71      0.68      0.69        62
+
+    accuracy                           0.69       454
+   macro avg       0.70      0.70      0.68       454
+weighted avg       0.72      0.69      0.69       454

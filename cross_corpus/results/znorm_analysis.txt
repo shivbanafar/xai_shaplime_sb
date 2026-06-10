@@ -1,0 +1,53 @@
+================================================================
+WHY Z-NORM HELPS / WHY FEAR & HAPPINESS FAIL   SAVEE -> EMO-DB
+================================================================
+SAVEE (420, 2048) | EMO-DB (454, 2048) | classes ['anger', 'disgust', 'fear', 'happiness', 'neutral', 'sadness']
+  anger      SAVEE n=60   EMO-DB n=127
+  disgust    SAVEE n=60   EMO-DB n=46
+  fear       SAVEE n=60   EMO-DB n=69
+  happiness  SAVEE n=60   EMO-DB n=71
+  neutral    SAVEE n=120  EMO-DB n=79
+  sadness    SAVEE n=60   EMO-DB n=62
+
+----------------------------------------------------------------
+1) DOMAIN SEPARABILITY  (corpus classifier; 50% = aligned)
+----------------------------------------------------------------
+  Naive source-scaler : acc=100.0%   proxy A-dist=2.000
+  Per-corpus z-norm   : acc= 33.9%   proxy A-dist=0.000
+  => separability change: 100.0% -> 33.9%
+
+----------------------------------------------------------------
+2) CLASS-CONDITIONAL CROSS-CORPUS CENTROID DISTANCE
+----------------------------------------------------------------
+  emotion     naive eu  znorm eu  znorm cos
+  anger          61.78     15.11      0.589
+  disgust        61.42     17.20      0.554
+  fear           61.96     17.81      0.813
+  happiness      60.21     12.98      0.601
+  neutral        67.91     16.31      0.496
+  sadness        59.77     23.18      0.498
+
+----------------------------------------------------------------
+3) NEAREST-CENTROID TRANSFER (z-norm; geometry-only per-class recall)
+----------------------------------------------------------------
+  overall nearest-centroid acc = 69.4%
+  emotion     NC recall  znorm cos-d  MAML F1
+  anger           54.3%        0.589     0.82
+  disgust         87.0%        0.554     0.76
+  fear            55.1%        0.813     0.66
+  happiness       53.5%        0.601     0.62
+  neutral         98.7%        0.496     0.82
+  sadness         83.9%        0.498     0.74
+
+----------------------------------------------------------------
+CORRELATIONS  (Spearman; negative = farther apart -> worse transfer)
+----------------------------------------------------------------
+  centroid cos-dist  vs  nearest-centroid recall : rho=-0.77 (p=0.072)
+  centroid cos-dist  vs  MAML per-class F1        : rho=-0.64 (p=0.173)
+
+  Emotions ranked by residual cross-corpus distance (worst first):
+    fear(0.81) > happiness(0.60) > anger(0.59) > disgust(0.55) > sadness(0.50) > neutral(0.50)
+
+  saved /Users/shivbanafar/Desktop/Research/xai_paper_shaplime/cross_corpus/results/centroid_distance.png
+  computing t-SNE (this takes a moment) ...
+  saved /Users/shivbanafar/Desktop/Research/xai_paper_shaplime/cross_corpus/results/tsne_znorm.png

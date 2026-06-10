@@ -1,0 +1,23 @@
+================================================================
+REVERSE ENHANCED  (EMO-DB -> SAVEE): z-norm + L2 + balanced + 5-seed
+================================================================
+[SVM balanced + L2]  acc=57.9%  macroF1=0.538
+  seed 42: acc=41.0%
+  seed 123: acc=42.6%
+  seed 7: acc=38.3%
+  seed 2024: acc=42.6%
+  seed 99: acc=34.5%
+
+[MAML ensemble]  acc=44.3%  macroF1=0.419  (per-seed mean 39.8% +/- 3.1)
+              precision    recall  f1-score   support
+
+       anger       0.33      0.82      0.47        60
+     disgust       0.88      0.12      0.21        60
+        fear       0.34      0.62      0.44        60
+   happiness       0.45      0.60      0.51        60
+     neutral       1.00      0.30      0.46       120
+     sadness       0.53      0.35      0.42        60
+
+    accuracy                           0.44       420
+   macro avg       0.59      0.47      0.42       420
+weighted avg       0.65      0.44      0.42       420
