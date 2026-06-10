@@ -62,6 +62,27 @@ Per-corpus z-normalization is the single biggest lever (+~16 points):
 
 ---
 
+## Reverse Direction (EMO-DB → SAVEE) — Bidirectional Transfer
+
+Transfer is **asymmetric**: the reverse direction (train EMO-DB, test SAVEE) is much harder, because SAVEE is only 4 idiosyncratic male speakers. All reverse fixes are **leakage-free** (set a priori from the EMO-DB source, never SAVEE test labels).
+
+| Setting | SVM | MAML |
+|---------|-----|------|
+| **SAVEE→EMO-DB** (forward) | 69.6% | **74.9%** |
+| EMO-DB→SAVEE (forward recipe) | 53.6% | 50.2% |
+| + class-balanced fine-tuning | 53.8% | 60.2% |
+| + per-speaker z-norm | **54.3%** | **63.6%** |
+
+- **Diagnosis:** EMO-DB is imbalanced (anger 127 vs disgust 46); naive MAML collapses onto anger (recall 0.95, precision 0.26).
+- **Fix 1 — class-balanced fine-tuning** (inverse-freq CE weights) + 3-seed ensemble → removes the collapse, 50.2% → 60.2%.
+- **Fix 2 — per-speaker z-norm** (each speaker standardized by own stats; uses speaker IDs, not labels) → 60.2% → 63.6%. Applied to the forward direction it leaves it ~unchanged (74.2%), so it does not inflate either side.
+- **Fear fails in BOTH directions** (F1 0.55 forward / 0.25 reverse under the consistent per-speaker recipe) → genuine cross-lingual divergence, not a one-off artifact. Happiness is the next weakest both ways.
+- **70% reverse is not honestly reachable** without tuning on SAVEE test labels; 63.6% (MAML) / 54.3% (SVM) stand as the best leakage-free reverse results.
+
+> Artifacts: `reverse_results.txt` (naive), `reverse_improved.txt` (class-balanced), `reverse_speaker_norm.txt` / `speaker_norm_bidirectional.txt` (per-speaker, both directions).
+
+---
+
 ## Negative Results (legitimate findings)
 
 - **Source-internal validation saturates:** SAVEE leave-one-speaker-out scored ~91–93% for *all* hyperparameter configs → cannot predict German transfer. Tuning for cross-lingual transfer using only the English source corpus is not possible.
