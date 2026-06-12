@@ -374,7 +374,8 @@ def run_xai(key, ddir, loader_fn, device):
         preds = torch.argmax(maml_ft(torch.tensor(X_te_sc, dtype=torch.float32, device=device)), 1).cpu().numpy()
     print(f"    MAML test acc: {accuracy_score(y_te, preds):.4f}")
 
-    # Background sets (small for speed)
+    # Background sets (small for speed); reseed for reproducible subsets
+    np.random.seed(SEED)
     bg_idx  = np.random.choice(len(X_trfull_sc), min(100, len(X_trfull_sc)), replace=False)
     te_idx  = np.random.choice(len(X_te_sc),     min(100, len(X_te_sc)),     replace=False)
     X_bg    = X_trfull_sc[bg_idx]
@@ -389,14 +390,25 @@ def run_xai(key, ddir, loader_fn, device):
                               rf_m.predict_proba(pca.transform(X_te_s)),
                               xgb_m.predict_proba(pca.transform(X_te_s))])
 
-    # ── SHAP: SVM (linear) ────────────────────────────────────────────────────
-    print("  SHAP: SVM (linear explainer) ...")
-    # Extract averaged coefficients from CalibratedClassifierCV
-    coefs = np.mean([c.estimator.coef_ for c in svm.calibrated_classifiers_], axis=0)
-    # Mean absolute coefficient per feature (aggregated over all classes)
-    mean_abs_coef = np.mean(np.abs(coefs), axis=0)
+    # ── SHAP: SVM (LinearExplainer, exact closed form) ─────────────────────────
+    print("  SHAP: SVM (LinearExplainer) ...")
+    # Averaged linear decision function from the calibrated sub-estimators
+    coefs      = np.mean([c.estimator.coef_      for c in svm.calibrated_classifiers_], axis=0)
+    intercepts = np.mean([c.estimator.intercept_ for c in svm.calibrated_classifiers_], axis=0)
+    mean_abs_coef = np.mean(np.abs(coefs), axis=0)   # for the coef-labelled plots below
 
-    # Top-20 handcrafted features (skip WavLM dims for interpretability)
+    # Genuine SHAP for the linear model: phi_j = w_j (x_j - E[x_j]); no sampling,
+    # numerically stable (KernelSHAP on 2275-D is ill-posed and blows up).
+    svm_expl = shap.LinearExplainer((coefs, intercepts), X_bg,
+                                    feature_perturbation="interventional")
+    svm_shap = svm_expl.shap_values(X_te_s)
+    if isinstance(svm_shap, list):
+        svm_shap = np.stack(svm_shap, axis=-1)        # (n_te, n_feat, n_cls)
+    elif svm_shap.ndim == 2:
+        svm_shap = svm_shap[:, :, np.newaxis]
+    mean_abs_shap_svm = np.mean(np.abs(svm_shap), axis=(0, 2))   # (n_feat,)
+
+    # Top-20 handcrafted features (coefficient magnitudes, labelled as such)
     hand_start = X.shape[1] - 227
     hand_coef  = mean_abs_coef[hand_start:]
     hand_names = feat_names[hand_start:]
@@ -406,11 +418,11 @@ def run_xai(key, ddir, loader_fn, device):
              os.path.join(xai_dir, "svm_feature_importance_handcrafted.png"),
              color="#2196F3")
 
-    # Feature group importance (all features)
+    # Feature group importance from genuine SHAP values
     group_vals = {}
     for gname, (g0, g1) in FEATURE_GROUPS.items():
-        g1 = min(g1, len(mean_abs_coef))
-        group_vals[gname] = float(mean_abs_coef[g0:g1].sum())
+        g1 = min(g1, len(mean_abs_shap_svm))
+        group_vals[gname] = float(mean_abs_shap_svm[g0:g1].sum())
     group_bar_plot(group_vals,
                    f"SVM — Feature Group Importance\n{key}",
                    os.path.join(xai_dir, "svm_feature_groups.png"))
